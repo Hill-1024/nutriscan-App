@@ -1,0 +1,7 @@
+{
+  "name": "NutriScan",
+  "description": "A smart nutrition tracking application powered by Gemini to identify food and track calories.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
