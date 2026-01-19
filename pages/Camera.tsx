@@ -1,5 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Camera as CapacitorCamera } from '@capacitor/camera';
+import { Capacitor } from '@capacitor/core';
 import { identifyFood } from '../services/aiService';
 import { AppRoute } from '../types';
 
@@ -14,6 +16,23 @@ export const Camera: React.FC = () => {
 
     useEffect(() => {
         const startCamera = async () => {
+            // 1. Explicitly request Native Permissions if on Android/iOS
+            // This triggers the system dialog which is required for getUserMedia to work in WebView
+            if (Capacitor.isNativePlatform()) {
+                try {
+                    const permissions = await CapacitorCamera.checkPermissions();
+                    if (permissions.camera !== 'granted') {
+                        const result = await CapacitorCamera.requestPermissions({ permissions: ['camera'] });
+                        if (result.camera !== 'granted') {
+                            alert('需要相机权限才能识别食物，请在设置中允许 NutriScan 访问相机。');
+                            // Don't return here, let it try fallback just in case or stay on screen
+                        }
+                    }
+                } catch (e) {
+                    console.warn("Native permission check failed", e);
+                }
+            }
+
             // Cleanup previous stream if any
             if (streamRef.current) {
                 streamRef.current.getTracks().forEach(track => track.stop());
