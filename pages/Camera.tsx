@@ -7,38 +7,59 @@ export const Camera: React.FC = () => {
     const videoRef = useRef<HTMLVideoElement>(null);
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const streamRef = useRef<MediaStream | null>(null);
     const navigate = useNavigate();
     const [isStreaming, setIsStreaming] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
 
     useEffect(() => {
-        let stream: MediaStream | null = null;
-
         const startCamera = async () => {
-            try {
-                stream = await navigator.mediaDevices.getUserMedia({
-                    video: {
-                        facingMode: 'environment',
-                        width: { ideal: 1920 },
-                        height: { ideal: 1080 }
-                    },
-                    audio: false
-                });
-                if (videoRef.current) {
-                    videoRef.current.srcObject = stream;
-                    setIsStreaming(true);
-                }
-            } catch (err) {
-                console.warn("Camera streaming failed, falling back to file input mode:", err);
+            // Cleanup previous stream if any
+            if (streamRef.current) {
+                streamRef.current.getTracks().forEach(track => track.stop());
             }
+
+            // Try different constraints: HD Environment -> Environment -> Any Video
+            const constraintsOptions = [
+                { video: { facingMode: 'environment', width: { ideal: 1920 }, height: { ideal: 1080 } }, audio: false },
+                { video: { facingMode: 'environment' }, audio: false },
+                { video: true, audio: false }
+            ];
+
+            for (const constraints of constraintsOptions) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+                    if (videoRef.current) {
+                        videoRef.current.srcObject = stream;
+                        streamRef.current = stream;
+
+                        // Wait for metadata to load to ensure dimensions are correct
+                        videoRef.current.onloadedmetadata = async () => {
+                            try {
+                                await videoRef.current?.play();
+                                setIsStreaming(true);
+                            } catch (e) {
+                                console.error("Video play failed", e);
+                            }
+                        };
+                        return; // Success, stop trying
+                    }
+                } catch (err) {
+                    console.warn(`Camera constraint failed: ${JSON.stringify(constraints)}`, err);
+                    // Continue to next constraint option
+                }
+            }
+
+            console.error("All camera attempts failed. Falling back to file input.");
         };
 
         startCamera();
 
         return () => {
-            if (stream) {
-                stream.getTracks().forEach(track => track.stop());
+            if (streamRef.current) {
+                streamRef.current.getTracks().forEach(track => track.stop());
             }
+            setIsStreaming(false);
         };
     }, []);
 
@@ -87,7 +108,6 @@ export const Camera: React.FC = () => {
             }
         } catch (error: any) {
             console.error(error);
-            // Alert the specific error message to help debugging on phone
             alert(`分析失败: ${error.message}`);
         } finally {
             setIsProcessing(false);
@@ -97,12 +117,19 @@ export const Camera: React.FC = () => {
     const handleCapture = async () => {
         if (isProcessing) return;
 
-        // If streaming, capture from video
+        // If streaming is active, capture from video directly (HTML5 method)
         if (isStreaming && videoRef.current && canvasRef.current) {
             const video = videoRef.current;
             const canvas = canvasRef.current;
 
-            // Set canvas to video dimensions temporarily
+            // Ensure we have valid dimensions
+            if (video.videoWidth === 0 || video.videoHeight === 0) {
+                console.warn("Video dimensions not ready, trying file input fallback");
+                fileInputRef.current?.click();
+                return;
+            }
+
+            // Set canvas to video dimensions
             canvas.width = video.videoWidth;
             canvas.height = video.videoHeight;
 
@@ -114,7 +141,8 @@ export const Camera: React.FC = () => {
                 await processImage(base64Data);
             }
         } else {
-            // Fallback: Trigger native file picker/camera intent
+            // Fallback: Trigger native file picker/camera intent only if streaming failed
+            console.log("Streaming not active, falling back to native intent");
             fileInputRef.current?.click();
         }
     };
@@ -150,12 +178,12 @@ export const Camera: React.FC = () => {
                 autoPlay
                 playsInline
                 muted
-                className={`absolute inset-0 w-full h-full object-cover ${!isStreaming ? 'hidden' : ''}`}
+                className={`absolute inset-0 w-full h-full object-cover ${!isStreaming ? 'opacity-0' : 'opacity-100'} transition-opacity duration-300`}
             />
 
             <canvas ref={canvasRef} className="hidden" />
 
-            {/* Hidden File Input for WebView Compatibility */}
+            {/* Hidden File Input for WebView Compatibility / Fallback */}
             <input
                 type="file"
                 ref={fileInputRef}
@@ -170,8 +198,8 @@ export const Camera: React.FC = () => {
 
             {/* Fallback View if no stream */}
             {!isStreaming && (
-                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <p className="text-white/50 text-sm">点击快门打开相机</p>
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
+                    <p className="text-white/50 text-sm animate-pulse">正在启动相机...</p>
                 </div>
             )}
 
@@ -222,12 +250,9 @@ export const Camera: React.FC = () => {
                     {/* Gallery Access */}
                     <button
                         onClick={() => {
-                            // Remove 'capture' attribute temporarily to allow file picker instead of direct camera
                             if (fileInputRef.current) {
                                 fileInputRef.current.removeAttribute('capture');
                                 fileInputRef.current.click();
-                                // Restore capture for next time
-                                setTimeout(() => fileInputRef.current?.setAttribute('capture', 'environment'), 100);
                             }
                         }}
                         className="group flex flex-col items-center gap-1 active:scale-95 transition-transform"
@@ -246,9 +271,14 @@ export const Camera: React.FC = () => {
                         </button>
                     </div>
 
-                    {/* Manual Input (Just another way to trigger file picker) */}
+                    {/* Manual Input Fallback */}
                     <button
-                        onClick={() => fileInputRef.current?.click()}
+                        onClick={() => {
+                            if (fileInputRef.current) {
+                                fileInputRef.current.setAttribute('capture', 'environment');
+                                fileInputRef.current.click();
+                            }
+                        }}
                         className="group flex items-center justify-center size-12 rounded-full bg-white/20 backdrop-blur-md border border-white/10 text-white transition-all active:scale-95 hover:bg-white/30 shadow-lg"
                     >
                         <span className="material-symbols-outlined text-[24px]">keyboard</span>
