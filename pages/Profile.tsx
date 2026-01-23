@@ -89,12 +89,10 @@ export const Profile: React.FC = () => {
         const firstDayOfWeek = new Date(year, month, 1).getDay(); // 0 = Sunday
 
         const days = [];
-        // Get today's date in local time string for accurate comparison
         const todayStr = getLocalDateStr(new Date());
 
         for (let i = 1; i <= daysInMonth; i++) {
             const currentDate = new Date(year, month, i);
-            // Ensure we construct the string using local components, not UTC
             const dateStr = getLocalDateStr(currentDate);
 
             const hasMeals = meals.some(m => m.date === dateStr);
@@ -319,12 +317,8 @@ export const Profile: React.FC = () => {
             <header className="flex items-center justify-between px-6 py-4 bg-background-light dark:bg-background-dark sticky top-0 z-10">
                 <div className="w-10"></div>
                 <h2 className="text-lg font-bold leading-tight tracking-tight">个人中心</h2>
-                <button
-                    onClick={() => navigate(AppRoute.SETTINGS)}
-                    className="w-10 flex items-center justify-end text-[#141613] dark:text-white hover:text-primary transition-colors"
-                >
-                    <span className="material-symbols-outlined">settings</span>
-                </button>
+                {/* Settings button removed from here as it is now in the main nav */}
+                <div className="w-10"></div>
             </header>
 
             <input type="file" ref={fileInputRef} accept="image/*" className="hidden" onChange={handleFileChange} />

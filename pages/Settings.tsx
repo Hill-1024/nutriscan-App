@@ -17,13 +17,10 @@ export const Settings: React.FC = () => {
     };
 
     return (
-        <div className="flex flex-col min-h-screen bg-background-light dark:bg-background-dark font-display text-[#141613] dark:text-white">
-            {/* Header */}
-            <div className="sticky top-0 z-10 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-xl px-6 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center gap-4">
-                <button onClick={() => navigate(-1)} className="flex items-center justify-center w-10 h-10 -ml-2 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-colors">
-                    <span className="material-symbols-outlined">arrow_back</span>
-                </button>
-                <h2 className="text-xl font-bold tracking-tight">设置</h2>
+        <div className="flex flex-col min-h-screen pb-32 bg-background-light dark:bg-background-dark font-display text-[#141613] dark:text-white">
+            {/* Header - No Back Button (Top Level Tab) */}
+            <div className="sticky top-0 z-10 bg-background-light/95 dark:bg-background-dark/95 backdrop-blur-xl px-6 py-4 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
+                <h2 className="text-2xl font-bold tracking-tight">设置</h2>
             </div>
 
             <div className="flex flex-col px-6 pt-6 gap-8">
@@ -46,9 +43,26 @@ export const Settings: React.FC = () => {
                     </button>
                 </section>
 
-                <div className="mt-auto pt-8 pb-12 text-center">
-                    <p className="text-xs text-gray-400">NutriScan Local v{process.env.APP_VERSION}</p>
-                    <p className="text-[10px] text-gray-300 mt-1">在 Android WebView 上本地运行</p>
+                {/* About App */}
+                <section className="flex flex-col gap-3">
+                    <div className="flex items-center gap-2">
+                        <span className="material-symbols-outlined text-gray-500">info</span>
+                        <h3 className="text-lg font-bold">关于应用</h3>
+                    </div>
+                    <div className="p-4 bg-surface-light dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700">
+                        <div className="flex justify-between items-center mb-2">
+                            <span className="font-semibold text-sm">当前版本</span>
+                            <span className="text-sm text-gray-500">v{process.env.APP_VERSION}</span>
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <span className="font-semibold text-sm">构建环境</span>
+                            <span className="text-sm text-gray-500">Capacitor / Android</span>
+                        </div>
+                    </div>
+                </section>
+
+                <div className="mt-auto pt-8 pb-4 text-center">
+                    <p className="text-[10px] text-gray-300">NutriScan Local • AI Powered</p>
                 </div>
 
             </div>

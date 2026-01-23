@@ -22,7 +22,13 @@ const AppContent: React.FC = () => {
         const setupListener = async () => {
             backButtonListener = await CapacitorApp.addListener('backButton', ({ canGoBack }) => {
                 // Define routes that are considered "root" level where back button should exit the app
-                const rootRoutes = [AppRoute.DASHBOARD, AppRoute.SPLASH];
+                const rootRoutes = [
+                    AppRoute.DASHBOARD,
+                    AppRoute.SPLASH,
+                    AppRoute.HISTORY,
+                    AppRoute.PROFILE,
+                    AppRoute.SETTINGS
+                ];
 
                 if (rootRoutes.includes(location.pathname as AppRoute)) {
                     CapacitorApp.exitApp();

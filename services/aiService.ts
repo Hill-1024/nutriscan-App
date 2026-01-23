@@ -1,5 +1,5 @@
-import { GoogleGenAI, Type, HarmCategory, HarmBlockThreshold } from "@google/genai";
-import { ScannedFood } from "../types";
+import {GoogleGenAI, HarmBlockThreshold, HarmCategory, Type} from "@google/genai";
+import {ScannedFood} from "../types";
 
 // --- Helpers ---
 
@@ -63,9 +63,11 @@ const promiseAny = async <T>(promises: Promise<T>[]): Promise<T> => {
 // --- Gemini Implementation ---
 
 const callGeminiModel = async (ai: GoogleGenAI, modelName: string, base64Image: string): Promise<ScannedFood> => {
+  // Enhanced prompt to look for packaging details
   const prompt = `
       Identify the food in this image.
-      Estimate calories, protein, carbs, and fat.
+      Important: If this is a packaged food, explicitly look for text on the packaging indicating net weight, volume, or serving size (e.g., "Net Wt", "grams", "ml", "kCal per serving") and use that to calculate the TOTAL calories and macros for the entire item shown.
+      If no text is visible or it is not packaged, estimate based on standard visual portion size.
       Return JSON: { "name": "Food Name (Chinese)", "calories": 0, "confidence": "High/Medium/Low", "macros": { "protein": 0, "carbs": 0, "fat": 0 } }
     `;
 
@@ -95,7 +97,7 @@ const callGeminiModel = async (ai: GoogleGenAI, modelName: string, base64Image: 
           }
         }
       },
-      // Disable safety settings to prevent false positives on food images (e.g. "dangerous content")
+      // Disable safety settings to prevent false positives on food images
       safetySettings: [
         { category: HarmCategory.HARM_CATEGORY_HARASSMENT, threshold: HarmBlockThreshold.BLOCK_NONE },
         { category: HarmCategory.HARM_CATEGORY_HATE_SPEECH, threshold: HarmBlockThreshold.BLOCK_NONE },
@@ -108,7 +110,6 @@ const callGeminiModel = async (ai: GoogleGenAI, modelName: string, base64Image: 
 
   const text = response.text;
   if (!text) {
-    // Log detailed reason if available for debugging
     const candidate = response.candidates?.[0];
     console.warn("[Gemini] Empty response text. FinishReason:", candidate?.finishReason, "Safety:", candidate?.safetyRatings);
     throw new Error(`Empty response (FinishReason: ${candidate?.finishReason || 'Unknown'})`);
@@ -133,11 +134,9 @@ const callGemini = async (base64Image: string): Promise<ScannedFood> => {
   } catch (error: any) {
     const errMsg = error.message || JSON.stringify(error);
 
-    // Fallback on Quota Exceeded OR Empty Response (which implies model instability or safety block)
     if (errMsg.includes("429") || errMsg.includes("RESOURCE_EXHAUSTED") || errMsg.includes("quota") || errMsg.includes("Empty response")) {
       console.warn("[AI] Gemini 3 Flash issue. Trying fallback to Flash Latest...");
       try {
-        // Fallback to gemini-flash-latest (stable)
         return await callGeminiModel(ai, "gemini-flash-latest", base64Image);
       } catch (err2: any) {
         throw new Error(`Gemini 识别失败: ${errMsg.substring(0, 50)}...`);
@@ -161,7 +160,8 @@ const callOpenAI = async (base64Image: string, apiKey: string, baseUrl: string, 
       content: [
         {
           type: "text",
-          text: `请识别图中食物。必须返回 JSON 格式：{"name": "中文菜名", "calories": number, "confidence": "High/Medium/Low", "macros": {"protein": number, "carbs": number, "fat": number}}。不要输出其他文字。`
+          // Updated Chinese prompt to strictly request packaging text analysis
+          text: `请识别图中食物。如果是包装食品，请务必仔细寻找并读取包装上的“净含量”、“规格”或“份量”文字（如克、毫升、kCal），并据此计算整个包装的总热量和营养素。若无包装文字，则按视觉标准份量估算。必须返回 JSON 格式：{"name": "中文菜名", "calories": number, "confidence": "High/Medium/Low", "macros": {"protein": number, "carbs": number, "fat": number}}。不要输出其他文字。`
         },
         {
           type: "image_url",
@@ -179,8 +179,6 @@ const callOpenAI = async (base64Image: string, apiKey: string, baseUrl: string, 
         "Authorization": `Bearer ${apiKey}`,
         "Accept": "application/json"
       },
-      // Important for Android WebViews: Prevents sending "https://localhost" or "capacitor://"
-      // as the Referer, which often triggers WAF/Firewall blocks (403 Forbidden) on Chinese APIs.
       referrerPolicy: "no-referrer",
       credentials: "omit",
       body: JSON.stringify({
@@ -196,7 +194,6 @@ const callOpenAI = async (base64Image: string, apiKey: string, baseUrl: string, 
       const errText = await response.text();
       console.error(`[AI] OpenAI Error ${response.status}:`, errText);
 
-      // Try to parse detailed JSON error if possible
       let detailedError = "";
       try {
         const errJson = JSON.parse(errText);
@@ -206,12 +203,9 @@ const callOpenAI = async (base64Image: string, apiKey: string, baseUrl: string, 
       const isQuotaError = detailedError.includes("balance") || detailedError.includes("quota") || detailedError.includes("credit") || detailedError.includes("payment");
 
       if (response.status === 401) throw new Error("OpenAI: Key 无效 (401)");
-
-      // Specific handling for insufficient balance
       if (response.status === 402 || (response.status === 403 && isQuotaError)) {
         throw new Error("OpenAI: 余额不足/配额已用完 (请充值)");
       }
-
       if (response.status === 403) throw new Error("OpenAI: 403 禁止访问 (API防火墙拦截 或 余额不足)");
       if (response.status === 404) throw new Error("OpenAI: 路径错误 (404) - 请检查 Base URL");
 
@@ -224,7 +218,6 @@ const callOpenAI = async (base64Image: string, apiKey: string, baseUrl: string, 
 
     const data = await response.json();
 
-    // Safety check for common API response structures
     if (!data.choices || data.choices.length === 0) {
       throw new Error("OpenAI: 返回数据格式错误 (无 choices)");
     }
@@ -252,11 +245,9 @@ const callOpenAI = async (base64Image: string, apiKey: string, baseUrl: string, 
 // --- Main Orchestrator ---
 
 export const identifyFood = async (base64Image: string): Promise<ScannedFood | null> => {
-  // Read env vars
   const geminiKey = process.env.API_KEY;
   const openAIKey = process.env.OPENAI_API_KEY;
 
-  // Use Vite env vars as fallback if process.env isn't fully hydrated in some contexts
   // @ts-ignore
   const envBaseUrl = import.meta.env?.VITE_API_BASE_URL;
   // @ts-ignore
@@ -287,12 +278,9 @@ export const identifyFood = async (base64Image: string): Promise<ScannedFood | n
   }
 
   try {
-    const result = await promiseAny(promises);
-    return result;
+    return await promiseAny(promises);
   } catch (error: any) {
     console.error("[AI] Race failed:", error);
-
-    // More descriptive error alert
     const errorList = error.message.split('\n').filter((l:string) => l.trim() !== '');
     const cleanError = errorList.length > 0 ? errorList.join('\n- ') : error.message;
 
