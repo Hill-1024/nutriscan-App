@@ -5,6 +5,7 @@ import { ScannedFood, AppRoute, Meal } from '../types';
 import { useMealStorage } from '../hooks/useMealStorage';
 import { inferMealType } from '../services/mealService';
 import { EditMealModal, NutritionData } from '../components/EditMealModal';
+import { IconArrowBack, IconVerified, IconSmartToy, IconPieChart, IconCheckCircle, IconEdit } from '../components/Icons';
 
 const CONFIDENCE_MAP: Record<string, string> = {
     'High': '高',
@@ -106,7 +107,7 @@ export const ScanResult: React.FC = () => {
             {/* Top App Bar */}
             <header className="flex items-center justify-between p-6 pb-2 relative z-10">
                 <button onClick={() => navigate(AppRoute.DASHBOARD)} className="group flex h-10 w-10 items-center justify-center rounded-full bg-gray-50 text-gray-900 transition-colors hover:bg-gray-100 dark:bg-gray-800 dark:text-white">
-                    <span className="material-symbols-outlined text-[24px]">arrow_back</span>
+                    <IconArrowBack className="text-[24px]" />
                 </button>
                 <h2 className="text-lg font-bold tracking-tight text-gray-900 dark:text-white">扫描结果</h2>
                 <div className="w-10"></div>
@@ -122,14 +123,14 @@ export const ScanResult: React.FC = () => {
                     {/* Status Badges */}
                     <div className="absolute bottom-4 left-4 flex flex-col gap-2">
                         <div className="self-start flex items-center gap-1.5 rounded-full bg-white/90 px-3 py-1.5 backdrop-blur-md dark:bg-black/60 shadow-sm">
-                            <span className="material-symbols-outlined text-[16px] text-primary">verified</span>
+                            <IconVerified className="text-[16px] text-primary" />
                             <span className="text-xs font-semibold text-gray-800 dark:text-gray-200">置信度: {CONFIDENCE_MAP[foodData.confidence] || foodData.confidence || '中'}</span>
                         </div>
 
                         {/* Source Model Badge */}
                         {foodData.sourceModel && (
                             <div className="self-start flex items-center gap-1.5 rounded-full bg-blue-50/90 px-3 py-1.5 backdrop-blur-md dark:bg-blue-900/60 shadow-sm">
-                                <span className="material-symbols-outlined text-[16px] text-blue-500">smart_toy</span>
+                                <IconSmartToy className="text-[16px] text-blue-500" />
                                 <span className="text-xs font-semibold text-blue-700 dark:text-blue-200">{foodData.sourceModel}</span>
                             </div>
                         )}
@@ -170,7 +171,7 @@ export const ScanResult: React.FC = () => {
                                 </PieChart>
                             </ResponsiveContainer>
                             <div className="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-                                <span className="material-symbols-outlined text-gray-400 text-3xl">pie_chart</span>
+                                <IconPieChart className="text-gray-400 text-3xl" />
                             </div>
                         </div>
 
@@ -225,7 +226,7 @@ export const ScanResult: React.FC = () => {
                         {isSaving ? (
                             <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></span>
                         ) : (
-                            <span className="material-symbols-outlined fill-1">check_circle</span>
+                            <IconCheckCircle className="fill-current w-5 h-5" />
                         )}
                         {isSaving ? '保存中...' : '添加到日记'}
                     </button>
@@ -234,7 +235,7 @@ export const ScanResult: React.FC = () => {
                         onClick={() => setIsEditing(true)}
                         className="flex h-12 w-full items-center justify-center gap-2 rounded-xl border border-gray-200 bg-white px-6 text-base font-semibold text-gray-700 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:bg-gray-700"
                     >
-                        <span className="material-symbols-outlined text-[20px]">edit</span>
+                        <IconEdit className="text-[20px]" />
                         编辑营养信息
                     </button>
                 </div>

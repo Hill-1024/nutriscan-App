@@ -5,6 +5,7 @@ import { useMealStorage } from '../hooks/useMealStorage';
 import { useUserStorage } from '../hooks/useUserStorage';
 import { useNavigate } from 'react-router-dom';
 import { calculateDailyCalorieTarget } from '../services/nutritionService';
+import { IconFire, IconSchedule, IconAddPhoto, IconArrowForward, IconSpinner } from '../components/Icons';
 
 const MEAL_TYPE_MAP: Record<string, string> = {
     'Breakfast': '早餐',
@@ -65,7 +66,7 @@ export const Dashboard: React.FC = () => {
     ];
 
     if (!mealsLoaded || !userLoaded) {
-        return <div className="min-h-screen flex items-center justify-center bg-background-light dark:bg-background-dark"><span className="material-symbols-outlined animate-spin text-primary">progress_activity</span></div>;
+        return <div className="min-h-screen flex items-center justify-center bg-background-light dark:bg-background-dark"><IconSpinner className="text-primary w-8 h-8" /></div>;
     }
 
     // Recommended Macro Ratios (Standard Balanced Diet)
@@ -117,7 +118,7 @@ export const Dashboard: React.FC = () => {
                         {/* Center Text */}
                         <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
                             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mb-2">
-                                <span className="material-symbols-outlined text-primary" style={{fontSize: '20px'}}>local_fire_department</span>
+                                <IconFire className="text-primary w-5 h-5" />
                             </div>
                             <h1 className="text-[40px] font-bold text-[#141613] dark:text-white tracking-tight leading-none">{remaining.toLocaleString()}</h1>
                             <p className="text-base font-medium text-[#737e6d] dark:text-gray-400 mt-1">剩余 / {dailyTarget}</p>
@@ -157,7 +158,7 @@ export const Dashboard: React.FC = () => {
                                         <span className="text-[10px] font-bold text-[#737e6d] uppercase tracking-wide bg-surface-light dark:bg-gray-700 px-2 py-1 rounded-md">{MEAL_TYPE_MAP[meal.type] || meal.type}</span>
                                     </div>
                                     <div className="flex items-center gap-3 text-sm text-[#737e6d] dark:text-gray-400">
-                                        <span className="flex items-center gap-1"><span className="material-symbols-outlined text-[16px]">schedule</span> {meal.time}</span>
+                                        <span className="flex items-center gap-1"><IconSchedule className="w-4 h-4" /> {meal.time}</span>
                                         <span className="w-1 h-1 rounded-full bg-gray-300"></span>
                                         <span className="font-medium text-primary">{meal.calories} kcal</span>
                                     </div>
@@ -176,14 +177,14 @@ export const Dashboard: React.FC = () => {
                         className="group flex items-center p-3 bg-surface-light dark:bg-gray-800/50 rounded-2xl border-2 border-dashed border-primary/20 hover:border-primary/60 transition-colors w-full"
                     >
                         <div className="h-[72px] w-[72px] shrink-0 flex items-center justify-center rounded-xl bg-white dark:bg-gray-700 text-primary shadow-sm">
-                            <span className="material-symbols-outlined text-2xl group-hover:scale-110 transition-transform">add_a_photo</span>
+                            <IconAddPhoto className="w-8 h-8 group-hover:scale-110 transition-transform" />
                         </div>
                         <div className="ml-4 flex-1 text-left py-1">
                             <h4 className="font-bold text-[#141613] dark:text-white text-base group-hover:text-primary transition-colors">记录下一餐</h4>
                             <p className="text-sm text-[#737e6d] dark:text-gray-400 mt-1">拍照分析</p>
                         </div>
                         <div className="pr-3 text-gray-300 group-hover:text-primary transition-colors">
-                            <span className="material-symbols-outlined">arrow_forward_ios</span>
+                            <IconArrowForward />
                         </div>
                     </button>
                 </div>

@@ -1,6 +1,7 @@
 import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AppRoute } from '../types';
+import { IconHome, IconCalendar, IconSettings, IconPerson, IconCamera } from './Icons';
 
 export const Navigation: React.FC = () => {
   const navigate = useNavigate();
@@ -13,7 +14,7 @@ export const Navigation: React.FC = () => {
     return null;
   }
 
-  const NavItem = ({ path, icon, label }: { path: string; icon: string; label: string }) => {
+  const NavItem = ({ path, Icon, label }: { path: string; Icon: React.ElementType; label: string }) => {
     const active = isActive(path);
     return (
         <button
@@ -21,9 +22,7 @@ export const Navigation: React.FC = () => {
             className="group relative flex flex-col items-center justify-center h-full w-full gap-1 active:scale-95 transition-transform duration-200"
         >
           <div className={`relative flex items-center justify-center p-1 rounded-xl transition-all duration-300 ${active ? '-translate-y-1' : 'group-hover:bg-gray-50 dark:group-hover:bg-white/5'}`}>
-          <span className={`material-symbols-outlined text-[26px] transition-colors duration-300 ${active ? 'text-primary icon-filled' : 'text-[#A5AD9F] dark:text-gray-500 group-hover:text-primary/70'}`}>
-            {icon}
-          </span>
+            <Icon className={`w-[26px] h-[26px] transition-colors duration-300 ${active ? 'text-primary' : 'text-[#A5AD9F] dark:text-gray-500 group-hover:text-primary/70'}`} />
             {/* Active Dot Indicator */}
             <div className={`absolute -bottom-2 w-1 h-1 rounded-full bg-primary transition-all duration-300 ${active ? 'opacity-100 scale-100' : 'opacity-0 scale-0'}`}></div>
           </div>
@@ -43,10 +42,10 @@ export const Navigation: React.FC = () => {
 
             {/* Left Group */}
             <div className="flex items-start pt-3">
-              <NavItem path={AppRoute.DASHBOARD} icon="home" label="首页" />
+              <NavItem path={AppRoute.DASHBOARD} Icon={IconHome} label="首页" />
             </div>
             <div className="flex items-start pt-3">
-              <NavItem path={AppRoute.HISTORY} icon="calendar_month" label="历史" />
+              <NavItem path={AppRoute.HISTORY} Icon={IconCalendar} label="历史" />
             </div>
 
             {/* Center Spacer for FAB */}
@@ -54,10 +53,10 @@ export const Navigation: React.FC = () => {
 
             {/* Right Group */}
             <div className="flex items-start pt-3">
-              <NavItem path={AppRoute.SETTINGS} icon="settings" label="设置" />
+              <NavItem path={AppRoute.SETTINGS} Icon={IconSettings} label="设置" />
             </div>
             <div className="flex items-start pt-3">
-              <NavItem path={AppRoute.PROFILE} icon="person" label="我的" />
+              <NavItem path={AppRoute.PROFILE} Icon={IconPerson} label="我的" />
             </div>
 
           </div>
@@ -69,7 +68,7 @@ export const Navigation: React.FC = () => {
                 className="group relative bg-primary hover:bg-[#5d9444] text-white rounded-full w-[72px] h-[72px] flex items-center justify-center shadow-[0_8px_24px_rgba(113,172,83,0.4)] transition-all active:scale-95 border-[6px] border-white dark:border-[#22262a]"
             >
               <div className="absolute inset-0 rounded-full border border-white/20"></div>
-              <span className="material-symbols-outlined text-[32px] group-hover:scale-110 transition-transform">photo_camera</span>
+              <IconCamera className="w-[32px] h-[32px] group-hover:scale-110 transition-transform" />
             </button>
             <span className="absolute -bottom-6 left-1/2 -translate-x-1/2 text-[10px] font-bold text-[#A5AD9F] dark:text-gray-500 tracking-wide pointer-events-none">
                 识别

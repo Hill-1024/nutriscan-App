@@ -4,9 +4,18 @@ import { UserProfile } from '../types';
 
 const STORAGE_KEY = 'nutriscan_user_profile_v1';
 
+// SVG Data URI for default avatar
+const DEFAULT_AVATAR = `data:image/svg+xml;base64,${btoa(`
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect width="100" height="100" fill="#71ac53" />
+  <circle cx="50" cy="40" r="15" fill="white" />
+  <path d="M25 80c0-15 10-25 25-25s25 10 25 25" fill="white" />
+</svg>
+`.trim())}`;
+
 const INITIAL_PROFILE: UserProfile = {
     name: 'Alex',
-    avatar: 'https://lh3.googleusercontent.com/aida-public/AB6AXuBCc8Qmk-foq2REVPQj9So5Z9HIzS4ildi0BiDf98kjmE1Ic4mb6zOyXTLb8Sd_V12Ii61qMavX6req9W5lUaiAHSzLh6zU72ps0r4hWAZ2sUhpFuSjOwLbkmEQJEdKjaPiaVhaXO93Ymg5lCzvl0SZPlJ_GvAq0zEVEzC2IIScvuQyCKHOm27BXI1WFjwg-D7KXU-vYAXzWdBllXa-2_ZieXUANnNevAl46JKD1m8fTKWdTE8-klpHDEBDErh7Y93P-XrQhIMhMw',
+    avatar: DEFAULT_AVATAR,
     currentWeight: 64,
     goalWeight: 60,
     startWeight: 66,
@@ -24,7 +33,7 @@ export const useUserStorage = () => {
         try {
             const { value } = await Preferences.get({ key: STORAGE_KEY });
             if (value) {
-                // Merge with initial profile to ensure new fields (age, height etc) exist if loading old data
+                // Merge with initial profile to ensure new fields (age, height etc.) exist if loading old data
                 const parsed = JSON.parse(value);
                 setUser({ ...INITIAL_PROFILE, ...parsed });
             } else {

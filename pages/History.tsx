@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Meal } from '../types';
 import { useMealStorage } from '../hooks/useMealStorage';
 import { EditMealModal, NutritionData } from '../components/EditMealModal';
+import { IconDelete, IconHistoryToggle, IconSpinner } from '../components/Icons';
 
 const MEAL_TYPE_MAP: Record<string, string> = {
     'Breakfast': '早餐',
@@ -60,7 +61,7 @@ export const History: React.FC = () => {
     };
 
     if (!isLoaded) {
-        return <div className="min-h-screen flex items-center justify-center bg-background-light dark:bg-background-dark"><span className="material-symbols-outlined animate-spin text-primary">progress_activity</span></div>;
+        return <div className="min-h-screen flex items-center justify-center bg-background-light dark:bg-background-dark"><IconSpinner className="text-primary w-8 h-8" /></div>;
     }
 
     return (
@@ -117,7 +118,7 @@ export const History: React.FC = () => {
                                             onClick={(e) => handleDelete(e, meal.id)}
                                             className="ml-2 w-8 h-8 flex items-center justify-center rounded-full bg-red-50 dark:bg-red-900/20 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/40 transition-colors"
                                         >
-                                            <span className="material-symbols-outlined text-[18px]">delete</span>
+                                            <IconDelete className="text-[18px]" />
                                         </button>
                                     </div>
                                 ))}
@@ -126,7 +127,7 @@ export const History: React.FC = () => {
                     ))
                 ) : (
                     <div className="mt-12 flex flex-col items-center justify-center text-center opacity-50">
-                        <span className="material-symbols-outlined text-4xl mb-2">history_toggle_off</span>
+                        <IconHistoryToggle className="text-4xl mb-2" />
                         <p>暂无饮食记录</p>
                     </div>
                 )}

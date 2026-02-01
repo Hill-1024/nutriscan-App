@@ -4,6 +4,7 @@ import { Camera as CapacitorCamera } from '@capacitor/camera';
 import { Capacitor } from '@capacitor/core';
 import { identifyFood } from '../services/aiService';
 import { AppRoute } from '../types';
+import { IconClose, IconFlashOff, IconFocus, IconImage, IconKeyboard } from '../components/Icons';
 
 export const Camera: React.FC = () => {
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -254,10 +255,10 @@ export const Camera: React.FC = () => {
             {/* Top Control Bar */}
             <div className="absolute top-0 left-0 w-full z-30 pt-12 pb-4 px-6 flex items-center justify-between">
                 <button onClick={() => navigate(-1)} className="group flex items-center justify-center size-10 rounded-full bg-white/20 backdrop-blur-md transition-all active:scale-95 hover:bg-white/30">
-                    <span className="material-symbols-outlined text-white text-[24px]">close</span>
+                    <IconClose className="text-white w-6 h-6" />
                 </button>
                 <button className="group flex items-center justify-center size-10 rounded-full bg-white/20 backdrop-blur-md transition-all active:scale-95 hover:bg-white/30">
-                    <span className="material-symbols-outlined text-white text-[24px]">flash_off</span>
+                    <IconFlashOff className="text-white w-6 h-6" />
                 </button>
             </div>
 
@@ -284,7 +285,7 @@ export const Camera: React.FC = () => {
                             </>
                         ) : (
                             <>
-                                <span className="material-symbols-outlined text-secondary text-[18px] icon-filled">center_focus_strong</span>
+                                <IconFocus className="text-secondary w-[18px] h-[18px]" />
                                 对准食物拍照
                             </>
                         )}
@@ -303,8 +304,8 @@ export const Camera: React.FC = () => {
                         }}
                         className="group flex flex-col items-center gap-1 active:scale-95 transition-transform"
                     >
-                        <div className="size-12 rounded-xl overflow-hidden border-2 border-white/30 bg-white/10 relative shadow-lg">
-                            <div className="absolute inset-0 bg-cover bg-center opacity-80 group-hover:opacity-100 transition-opacity" style={{backgroundImage: 'url("https://lh3.googleusercontent.com/aida-public/AB6AXuDgAqtucudMF4pKlP1Qh51rUThVWjhnRPEI6TFlrcbDy2y8o2b6ESGqIRweqDDwM3dJ7b3cGMewAz5IcngduTYLxhIqnyHxPhXn8UltQktMYYuCM1MY93dkyDRTG_tLNWSPiTr1BI2AbhYFXBrYCerNMHPrB4e4SMJ02LChPMN1_m2x4B9_tVFhYu5bKLYfpON-dPT6sw7xWhu3PMv2snH0lKx_glOq298LN8T0uFKz0YY2wRLDETrB1AC3mWAGbxxxOKxME4BZ-A")'}}></div>
+                        <div className="size-12 rounded-xl overflow-hidden border-2 border-white/30 bg-white/10 flex items-center justify-center relative shadow-lg group-hover:bg-white/20 transition-colors">
+                            <IconImage className="text-white opacity-80 group-hover:opacity-100 w-6 h-6" />
                         </div>
                     </button>
 
@@ -327,7 +328,7 @@ export const Camera: React.FC = () => {
                         }}
                         className="group flex items-center justify-center size-12 rounded-full bg-white/20 backdrop-blur-md border border-white/10 text-white transition-all active:scale-95 hover:bg-white/30 shadow-lg"
                     >
-                        <span className="material-symbols-outlined text-[24px]">keyboard</span>
+                        <IconKeyboard className="text-[24px]" />
                     </button>
                 </div>
             </div>

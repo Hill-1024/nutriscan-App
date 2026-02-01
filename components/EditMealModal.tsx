@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { IconClose } from './Icons';
 
 export interface NutritionData {
     name: string;
@@ -41,7 +42,7 @@ export const EditMealModal: React.FC<EditMealModalProps> = ({ initialData, onClo
                 <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 dark:border-gray-800">
                     <h3 className="text-lg font-bold text-gray-900 dark:text-white">编辑营养信息</h3>
                     <button onClick={onClose} className="p-2 -mr-2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200">
-                        <span className="material-symbols-outlined">close</span>
+                        <IconClose />
                     </button>
                 </div>
 

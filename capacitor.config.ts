@@ -10,6 +10,15 @@ const config: CapacitorConfig = {
   plugins: {
     Preferences: {
       group: 'NutriScanGroup'
+    },
+    SplashScreen: {
+      backgroundColor: "#ffffff",
+      launchShowDuration: 1000,
+      launchAutoHide: true,
+      showSpinner: false,
+      androidScaleType: "CENTER_CROP",
+      splashFullScreen: true,
+      splashImmersive: true
     }
   }
 };

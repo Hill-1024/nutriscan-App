@@ -11,6 +11,17 @@ const getLocalTodayDate = () => {
   return `${year}-${month}-${day}`;
 };
 
+// Generates a simple colored SVG placeholder data URI
+const generatePlaceholder = (color: string, text: string) => {
+  const svg = `
+  <svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+    <rect width="200" height="200" fill="${color}" />
+    <text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-family="sans-serif" font-size="24" fill="white" font-weight="bold">${text}</text>
+  </svg>
+  `.trim();
+  return `data:image/svg+xml;base64,${btoa(svg)}`;
+};
+
 // Initial mock data to populate if storage is empty
 const INITIAL_DATA: Meal[] = [
   {
@@ -19,7 +30,7 @@ const INITIAL_DATA: Meal[] = [
     type: 'Breakfast',
     time: '08:30 AM',
     calories: 350,
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuCpaeR22QymxTIADVfnpAjc9tQ8-k0GRWxC72gfQDjnRSQKnfzpCKKZQsZkbu2oUcsSwIq5NGJ8oFKwyaN0_8e9fudVNAVK7W1orizT9gevqdRzZQgJ-lO-xhJxlqDKBn0pL_iGUzP64iplEQMO_-j6IDZ5GoDiJFnBtlYoizP8xpN93lbimeh643ujIZX44bMvc2DqUMRt1NLEqB8Frc0peHKO8AkAa5oStq1hHoNA-sieI6l9Y1LiwDfCv9_JnXorzAQb_X_Jog',
+    image: generatePlaceholder('#FFB7B2', 'Oatmeal'),
     date: getLocalTodayDate(),
     timestamp: Date.now() - 10000000
   },
@@ -29,7 +40,7 @@ const INITIAL_DATA: Meal[] = [
     type: 'Lunch',
     time: '01:15 PM',
     calories: 450,
-    image: 'https://lh3.googleusercontent.com/aida-public/AB6AXuC-oGecJnqENgkEMmPsE9qDMPUGiOYjQix-PxU3EqbbnxU3_wicbpXsMl3gHPDhcdCJ_KBKsD5AyGhJpsW7zSDm0BsgAJrF4RNFLX9zBGeGwB61YnKb-I8Fu8J7EVYs6RBsnHVuS8W30Xu5o9MZjnWctFT6dReo8dIKAlJdhGguS8M0CxlfliJ3CKH3KH2Mmz4MPQtcQZpYA4ADCZw-t1ELKGW910NPomDITVNJ875slCKI8mDFEyRJCzA74x-sRItW1UjSCZWP-A',
+    image: generatePlaceholder('#B5EAD7', 'Salad'),
     date: getLocalTodayDate(),
     timestamp: Date.now() - 5000000
   }

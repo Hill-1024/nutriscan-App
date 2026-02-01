@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AppRoute } from '../types';
 import { useMealStorage } from '../hooks/useMealStorage';
+import { IconDatabase, IconDelete, IconInfo } from '../components/Icons';
 
 export const Settings: React.FC = () => {
     const navigate = useNavigate();
@@ -28,7 +29,7 @@ export const Settings: React.FC = () => {
                 {/* Data Management */}
                 <section className="flex flex-col gap-3">
                     <div className="flex items-center gap-2">
-                        <span className="material-symbols-outlined text-red-500">database</span>
+                        <IconDatabase className="text-red-500 w-6 h-6" />
                         <h3 className="text-lg font-bold">数据管理</h3>
                     </div>
                     <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -39,14 +40,14 @@ export const Settings: React.FC = () => {
                         className="flex items-center justify-between p-4 bg-red-50 dark:bg-red-900/10 border border-red-100 dark:border-red-900/30 rounded-xl group active:bg-red-100 transition-colors"
                     >
                         <span className="text-red-600 dark:text-red-400 font-semibold text-sm">清除所有记录</span>
-                        <span className="material-symbols-outlined text-red-600 dark:text-red-400 group-hover:scale-110 transition-transform">delete_forever</span>
+                        <IconDelete className="text-red-600 dark:text-red-400 group-hover:scale-110 transition-transform w-6 h-6" />
                     </button>
                 </section>
 
                 {/* About App */}
                 <section className="flex flex-col gap-3">
                     <div className="flex items-center gap-2">
-                        <span className="material-symbols-outlined text-gray-500">info</span>
+                        <IconInfo className="text-gray-500 w-6 h-6" />
                         <h3 className="text-lg font-bold">关于应用</h3>
                     </div>
                     <div className="p-4 bg-surface-light dark:bg-gray-800 rounded-xl border border-gray-100 dark:border-gray-700">

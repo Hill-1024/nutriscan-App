@@ -4,6 +4,7 @@ import { AppRoute, UserProfile, Gender, ActivityLevel } from '../types';
 import { useUserStorage } from '../hooks/useUserStorage';
 import { useMealStorage } from '../hooks/useMealStorage';
 import { calculateDailyCalorieTarget, getActivityLabel } from '../services/nutritionService';
+import { IconAddPhoto, IconEdit, IconFire, IconChevronLeft, IconChevronRight, IconClose, IconMonitorWeight, IconTrendingDown, IconFlag, IconBody, IconHistory, IconCheck } from '../components/Icons';
 
 export const Profile: React.FC = () => {
     const navigate = useNavigate();
@@ -220,7 +221,7 @@ export const Profile: React.FC = () => {
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="text-xl font-bold text-gray-900 dark:text-white">更新{getWeightTitle()}体重</h3>
                             <button onClick={() => setEditingWeightType(null)} className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                                <span className="material-symbols-outlined text-gray-500">close</span>
+                                <IconClose className="text-gray-500 w-6 h-6" />
                             </button>
                         </div>
                         <div className="relative mb-8">
@@ -246,7 +247,7 @@ export const Profile: React.FC = () => {
                         <div className="flex justify-between items-center mb-6">
                             <h3 className="text-xl font-bold text-gray-900 dark:text-white">身体档案</h3>
                             <button onClick={() => setIsEditingBodyData(false)} className="p-1 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
-                                <span className="material-symbols-outlined text-gray-500">close</span>
+                                <IconClose className="text-gray-500 w-6 h-6" />
                             </button>
                         </div>
 
@@ -299,7 +300,7 @@ export const Profile: React.FC = () => {
                                             className={`w-full p-3 rounded-xl text-left border transition-all flex justify-between items-center ${bodyDataForm.activityLevel === level ? 'border-primary bg-primary/5' : 'border-gray-200 dark:border-gray-700'}`}
                                         >
                                             <span className={`font-medium ${bodyDataForm.activityLevel === level ? 'text-primary' : 'text-gray-700 dark:text-gray-300'}`}>{getActivityLabel(level)}</span>
-                                            {bodyDataForm.activityLevel === level && <span className="material-symbols-outlined text-primary">check</span>}
+                                            {bodyDataForm.activityLevel === level && <IconCheck className="text-primary w-5 h-5" />}
                                         </button>
                                     ))}
                                 </div>
@@ -332,7 +333,7 @@ export const Profile: React.FC = () => {
                     ></div>
                     {isEditingProfile && (
                         <div className="absolute inset-0 bg-black/40 rounded-full flex items-center justify-center">
-                            <span className="material-symbols-outlined text-white">add_a_photo</span>
+                            <IconAddPhoto className="text-white w-8 h-8" />
                         </div>
                     )}
                     {!isEditingProfile && (
@@ -340,7 +341,7 @@ export const Profile: React.FC = () => {
                             onClick={() => setIsEditingProfile(true)}
                             className="absolute bottom-0 right-0 bg-primary text-white p-1.5 rounded-full border-2 border-white dark:border-background-dark shadow-sm cursor-pointer active:scale-95 transition-transform"
                         >
-                            <span className="material-symbols-outlined text-[16px] block">edit</span>
+                            <IconEdit className="text-[16px] block" />
                         </div>
                     )}
                 </div>
@@ -359,7 +360,7 @@ export const Profile: React.FC = () => {
                     )}
 
                     <div className="flex items-center justify-center gap-1.5 mt-2 bg-orange-50 dark:bg-orange-900/10 px-3 py-1 rounded-full border border-orange-100 dark:border-orange-900/20">
-                        <span className="material-symbols-outlined text-orange-500 text-[18px]">local_fire_department</span>
+                        <IconFire className="text-orange-500 text-[18px]" />
                         <p className="text-orange-600 dark:text-orange-400 text-sm font-bold">
                             {currentStreak} 天连续记录
                         </p>
@@ -379,11 +380,11 @@ export const Profile: React.FC = () => {
                 <div className="bg-surface-light dark:bg-surface-light/5 rounded-2xl p-4 shadow-[0_4px_20px_-2px_rgba(0,0,0,0.05)]">
                     <div className="flex items-center justify-between mb-4 px-2">
                         <button onClick={() => changeMonth(-1)} className="p-2 hover:bg-black/5 dark:hover:bg-white/10 rounded-full transition-colors active:scale-90">
-                            <span className="material-symbols-outlined text-gray-600 dark:text-gray-300">chevron_left</span>
+                            <IconChevronLeft className="text-gray-600 dark:text-gray-300 w-6 h-6" />
                         </button>
                         <span className="text-base font-bold text-[#141613] dark:text-white capitalize">{calendarData.monthName}</span>
                         <button onClick={() => changeMonth(1)} className="p-2 hover:bg-black/5 dark:hover:bg-white/10 rounded-full transition-colors active:scale-90">
-                            <span className="material-symbols-outlined text-gray-600 dark:text-gray-300">chevron_right</span>
+                            <IconChevronRight className="text-gray-600 dark:text-gray-300 w-6 h-6" />
                         </button>
                     </div>
 
@@ -435,12 +436,12 @@ export const Profile: React.FC = () => {
                         >
                             <div className="absolute -right-4 -top-4 w-20 h-20 bg-white/20 rounded-full blur-xl transition-all group-hover:bg-white/30"></div>
                             <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-50 transition-opacity">
-                                <span className="material-symbols-outlined text-[#22262a] text-lg">edit</span>
+                                <IconEdit className="text-[#22262a] text-lg" />
                             </div>
 
                             <div className="flex justify-between items-start">
                                 <p className="text-[#22262a]/70 text-sm font-semibold">当前体重</p>
-                                <span className="material-symbols-outlined text-[#22262a]/50 text-xl">monitor_weight</span>
+                                <IconMonitorWeight className="text-[#22262a]/50 text-xl" />
                             </div>
                             <div>
                                 <div className="flex items-baseline gap-1">
@@ -448,7 +449,7 @@ export const Profile: React.FC = () => {
                                     <span className="text-base font-medium text-[#22262a]/70">kg</span>
                                 </div>
                                 <div className="flex items-center gap-1 mt-1 text-[#22262a]/60 text-xs font-medium">
-                                    <span className="material-symbols-outlined text-sm">trending_down</span>
+                                    <IconTrendingDown className="text-sm" />
                                     <span>累计减重 {(user.startWeight - user.currentWeight).toFixed(1)}kg</span>
                                 </div>
                             </div>
@@ -461,12 +462,12 @@ export const Profile: React.FC = () => {
                         >
                             <div className="absolute -right-4 -bottom-4 w-24 h-24 bg-white/20 rounded-full blur-xl transition-all group-hover:bg-white/30"></div>
                             <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-50 transition-opacity">
-                                <span className="material-symbols-outlined text-[#22262a] text-lg">edit</span>
+                                <IconEdit className="text-[#22262a] text-lg" />
                             </div>
 
                             <div className="flex justify-between items-start">
                                 <p className="text-[#22262a]/70 text-sm font-semibold">目标体重</p>
-                                <span className="material-symbols-outlined text-[#22262a]/50 text-xl">flag</span>
+                                <IconFlag className="text-[#22262a]/50 text-xl" />
                             </div>
                             <div>
                                 <div className="flex items-baseline gap-1">
@@ -490,7 +491,7 @@ export const Profile: React.FC = () => {
                     >
                         <div className="flex items-center gap-4">
                             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
-                                <span className="material-symbols-outlined">accessibility_new</span>
+                                <IconBody className="w-6 h-6" />
                             </div>
                             <div className="text-left">
                                 <p className="text-gray-900 dark:text-white text-sm font-bold">身体档案</p>
@@ -512,7 +513,7 @@ export const Profile: React.FC = () => {
                     >
                         <div className="flex items-center gap-4">
                             <div className="w-10 h-10 rounded-full bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center text-blue-500">
-                                <span className="material-symbols-outlined">history</span>
+                                <IconHistory className="w-6 h-6" />
                             </div>
                             <div className="text-left">
                                 <p className="text-gray-900 dark:text-white text-sm font-bold">初始体重</p>
@@ -521,7 +522,7 @@ export const Profile: React.FC = () => {
                         <div className="flex items-baseline gap-1 mr-2 group-hover:text-primary transition-colors">
                             <h3 className="text-xl font-bold text-gray-900 dark:text-white">{user.startWeight}</h3>
                             <span className="text-sm font-medium text-gray-500 dark:text-gray-400">kg</span>
-                            <span className="material-symbols-outlined text-gray-300 text-lg ml-2 group-hover:text-primary/50">edit</span>
+                            <IconEdit className="text-gray-300 text-lg ml-2 group-hover:text-primary/50" />
                         </div>
                     </button>
 
